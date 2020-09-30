@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Espetaculo.Shared
+namespace Espetaculo.Shared.Entities
 {
     public class Entidade
     {

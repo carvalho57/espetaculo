@@ -3,6 +3,6 @@ namespace Espetaculo.Domain.Enums {
         Cancelada,
         Criada,
         AguardandoPagamento,
-        Concluida
+        PagamentoConcluido
     }
 }
