@@ -16,7 +16,7 @@ namespace Espetaculo.ConsoleUI
             var user = new Usuario(new Email("gabriel@carvalho.com"), "carvalho67", ETipoUsuario.Cliente);
             var cliente = new Cliente("gabriel", "carvalho", user);
             var espetaculo = new Espetaculo.Domain.Entities.Espetaculo("homem aranha", "Um filme legal", 130);
-            var sala1 = new Sala("sala 1", 30);
+            var sala1 = new Sala("sala 1", 30, EIdentificacaoPoltrona.Numerico);
             var sessao = new Sessao(DateTime.Now.AddDays(15), espetaculo, sala1, 10.50M);
             var sessao2 = new Sessao(DateTime.Now.AddDays(16), espetaculo, sala1, 10.50M);
             
