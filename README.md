@@ -2,9 +2,9 @@ Gerenciador de vendas de poltronas
 
 Espetáculos
 
-    Cadastrar espetáculo;
-    Editar espetáculo;
-    Remover espetáculo.
+    [ ] Cadastrar espetáculo;
+    [ ] Editar espetáculo;
+    [ ] Remover espetáculo.
 
 Poltronas
 
