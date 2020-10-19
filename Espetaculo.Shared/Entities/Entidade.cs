@@ -1,8 +1,9 @@
 ﻿using System;
+using Flunt.Notifications;
 
-namespace Espetaculo.Shared.Entities
+namespace Espetaculos.Shared.Entities
 {
-    public class Entidade
+    public class Entidade : Notifiable
     {
         protected Entidade()
         {

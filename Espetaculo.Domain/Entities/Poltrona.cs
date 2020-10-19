@@ -1,22 +1,30 @@
 using System;
-using Espetaculo.Shared.Entities;
+using Espetaculos.Shared.Entities;
+using Flunt.Validations;
 
-namespace Espetaculo.Domain.Entities
+namespace Espetaculos.Domain.Entities
 {
     public class Poltrona : Entidade
     {
-        public Poltrona(int numero, Sala sala)
+        public Poltrona(string identificador, Sala sala)
         {
-            Numero = numero;
+            Identificador = identificador;
             Ocupada = false;
             Sala = sala;
+
+            AddNotifications(new Contract()
+                .Requires()
+                .IsNotNullOrEmpty(Identificador, nameof(Identificador), "O identificador da poltrona não pode estar em branco")                                
+            );
         }
 
-        public int Numero { get; private set; }
+        public string Identificador { get; private set; }
         public bool Ocupada { get; private set; }
         public Sala Sala { get; private set; }
 
         public void Ocupar() => Ocupada = true;
         public void Desocupar() => Ocupada = false;
+
+        
     }
 }

@@ -1,7 +1,8 @@
 using System;
-using Espetaculo.Shared.Entities;
+using Espetaculos.Shared.Entities;
+using Flunt.Validations;
 
-namespace Espetaculo.Domain.Entities
+namespace Espetaculos.Domain.Entities
 {
     public class Cliente : Entidade
     {
@@ -10,6 +11,13 @@ namespace Espetaculo.Domain.Entities
             Nome = nome;
             Sobrenome = sobrenome;
             Usuario = usuario;
+
+            AddNotifications(new Contract()
+                .Requires()
+                .IsNotNullOrEmpty(Nome, nameof(Nome), "O nome não pode estar em branco")
+                .IsNotNull(Sobrenome, nameof(Sobrenome), "O sobrenome não pode estar em branco")
+                .Join(Usuario)
+            );
         }
 
         public string Nome { get; private set; }

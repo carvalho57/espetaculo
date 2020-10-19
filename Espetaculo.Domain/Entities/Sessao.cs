@@ -1,20 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Espetaculo.Shared.Entities;
-namespace Espetaculo.Domain.Entities
+using Espetaculos.Domain.Enums;
+using Espetaculos.Shared.Entities;
+using Flunt.Validations;
+
+namespace Espetaculos.Domain.Entities
 {
     public class Sessao : Entidade
     {
+        private readonly char PrimeiraLetraDaColuna = 'A';
         public Sessao(DateTime horario, Espetaculo espetaculo, Sala sala, decimal valorIngresso)
         {
             Horario = horario;
             Espetaculo = espetaculo;
             Sala = sala;
             ValorIngresso = valorIngresso;
-            Encerrada = false;
             _poltronas = new List<Poltrona>();
-            InicializarPoltronas(sala);
+
+            AddNotifications(new Contract()
+                    .Requires()
+                    .IsGreaterThan(Horario, DateTime.Now, nameof(Horario), "Horario não pode ser menor do que a data de hoje")
+                    .IsGreaterThan(ValorIngresso, 0, nameof(ValorIngresso), "O valor do ingresso não pode ser menor ou igual a zero")                    
+            );
+
+            if(Valid)
+                InicializarPoltronas(sala);
         }
         // Para mudar necessita saber se não ha outro no mesmo horário
         // mesmas validaçẽos para sala
@@ -27,14 +38,38 @@ namespace Espetaculo.Domain.Entities
         // Encerrado sera se o horario  e dia atual e maior
         private void InicializarPoltronas(Sala sala)
         {
-            Poltrona poltrona = null;
-            for (int i = 0; i < sala.Capacidade; i++)
+            if (sala.IdentificacaoPoltronas == EIdentificacaoPoltrona.AlfaNumerico)
             {
-                poltrona = new Poltrona(i, sala);
-                _poltronas.Add(poltrona);
+                for (int numeroPoltrona = 0; numeroPoltrona < sala.CapacidadeTotal; numeroPoltrona++)
+                    _poltronas.Add(new Poltrona(numeroPoltrona.ToString(), sala));
+            }
+            else
+            {
+                char letra = PrimeiraLetraDaColuna;
+                int capacidadePorFila = 0;
+                int numeroPoltronas = 0;
+                do
+                {
+
+                    _poltronas.Add(new Poltrona((letra + (capacidadePorFila + 1).ToString()), sala));
+                    capacidadePorFila++;
+                    numeroPoltronas++;
+                    if (capacidadePorFila >= sala.PoltronasPorFila)
+                    {
+                        letra++;
+                        capacidadePorFila = 0;
+                    }
+                } while (numeroPoltronas < sala.CapacidadeTotal);
             }
         }
-        public bool Encerrada { get; private set; }
+
+        public bool Encerrada
+        {
+            get
+            {
+                return DateTime.Now > Horario;
+            }
+        }
         public decimal ValorIngresso { get; private set; }
 
 

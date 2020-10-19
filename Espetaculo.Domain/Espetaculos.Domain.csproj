@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Espetaculo.Shared\Espetaculo.Shared.csproj" />
+    <ProjectReference Include="..\Espetaculo.Shared\Espetaculos.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flunt" Version="1.0.5" />
   </ItemGroup>
 
   <PropertyGroup>

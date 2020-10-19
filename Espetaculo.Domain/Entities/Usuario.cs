@@ -1,9 +1,10 @@
 using System;
-using Espetaculo.Domain.Enums;
-using Espetaculo.Domain.ValueObjects;
-using Espetaculo.Shared.Entities;
+using Espetaculos.Domain.Enums;
+using Espetaculos.Domain.ValueObjects;
+using Espetaculos.Shared.Entities;
+using Flunt.Validations;
 
-namespace Espetaculo.Domain.Entities
+namespace Espetaculos.Domain.Entities
 {
     public class Usuario : Entidade
     {
@@ -12,6 +13,13 @@ namespace Espetaculo.Domain.Entities
             Email = email;
             Senha = senha;
             Papel = papel;
+
+            AddNotifications(
+                new Contract()
+                .Requires()
+                .HasMinLen(Senha, 6, nameof(Senha), "A senha ve ter no minimo 6 caracteres")
+                .Join(email)
+            );           
         }
 
         public Email Email { get; private set; }

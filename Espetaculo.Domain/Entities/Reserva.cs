@@ -1,9 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Espetaculo.Domain.Enums;
-using Espetaculo.Shared.Entities;
-namespace Espetaculo.Domain.Entities
+using Espetaculos.Shared.Entities;
+using Espetaculos.Domain.Enums;
+using Flunt.Validations;
+
+namespace Espetaculos.Domain.Entities
 {
     public class Reserva : Entidade
     {
@@ -14,28 +15,43 @@ namespace Espetaculo.Domain.Entities
             Sessao = sessao;
             _ingressos = new List<Ingresso>();
             Status = EStatusReserva.Criada;
+
+            AddNotifications(new Contract()
+                .IfNotNull(Pagador, entidade => entidade.Join(Pagador))
+                .IfNotNull(Sessao, entidade => entidade.Join(Sessao))
+            );
         }
 
         public Cliente Pagador { get; private set; }
         public Sessao Sessao { get; private set; }
         public EStatusReserva Status { get; private set; }
         public IReadOnlyCollection<Ingresso> Ingressos => _ingressos.ToArray();
-
-        public void AdicionarIngresso(Ingresso ingresso)
+        
+        public bool AdicionarIngresso(Ingresso ingresso)
         {
+            if (ingresso.Invalid)
+            {
+                AddNotifications(ingresso);
+                return false;
+            }
+
             _ingressos.Add(ingresso);
             Status = EStatusReserva.AguardandoPagamento;
+            return true;
         }
-
-        public void Cancelar() {
+        //Quando a reserva for cancelada, so não persistir
+        public void Cancelar()
+        {
             Status = EStatusReserva.Cancelada;
         }
 
-        public void Pagar() {
+        public void Pagar()
+        {
             Status = EStatusReserva.PagamentoConcluido;
         }
-        
-        public decimal Total() {
+
+        public decimal Total()
+        {
             return _ingressos.Sum(ingresso => Sessao.ValorIngresso);
         }
     }

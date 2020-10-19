@@ -1,7 +1,8 @@
 using System;
-using Espetaculo.Shared.Entities;
+using Espetaculos.Shared.Entities;
+using Flunt.Validations;
 
-namespace Espetaculo.Domain.Entities
+namespace Espetaculos.Domain.Entities
 {
     public class Espetaculo : Entidade
     {
@@ -10,6 +11,13 @@ namespace Espetaculo.Domain.Entities
             Nome = nome;
             Descricao = descricao;
             DuracaoMinutos = duracaoMinutos;
+
+            AddNotifications( new Contract()
+                .Requires()
+                .IsNotNullOrEmpty(Nome, nameof(Nome), "O nome do espetaculo não pode estar vazio")
+                .IsNotNullOrEmpty(Descricao, nameof(Descricao), "A descrição do espetaculo não pode estar vazia")
+                .IsGreaterThan(DuracaoMinutos,0, nameof(DuracaoMinutos), "A duração do espetaculo deve ter valor maior que zero")
+            );
         }
 
         public string Nome { get; private set; }

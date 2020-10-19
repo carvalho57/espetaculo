@@ -1,4 +1,4 @@
-namespace Espetaculo.Domain.Enums {
+namespace Espetaculos.Domain.Enums {
     public enum EIdentificacaoPoltrona {
         Numerico,
         AlfaNumerico
