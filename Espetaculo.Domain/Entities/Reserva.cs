@@ -26,18 +26,24 @@ namespace Espetaculos.Domain.Entities
         public Sessao Sessao { get; private set; }
         public EStatusReserva Status { get; private set; }
         public IReadOnlyCollection<Ingresso> Ingressos => _ingressos.ToArray();
-        
-        public bool AdicionarIngresso(Ingresso ingresso)
-        {
-            if (ingresso.Invalid)
-            {
-                AddNotifications(ingresso);
-                return false;
-            }
 
-            _ingressos.Add(ingresso);
-            Status = EStatusReserva.AguardandoPagamento;
-            return true;
+        public void AdicionarIngresso(Ingresso ingresso)
+        {
+            AddNotifications(new Contract()
+                 .Requires()
+                 .Join(ingresso)
+            );
+            if (Valid)
+            {
+                _ingressos.Add(ingresso);
+                Status = EStatusReserva.AguardandoPagamento;
+            }
+        }
+
+        public void AdicionarIngresso(IEnumerable<Ingresso> ingressos)
+        {
+            foreach (var ingresso in ingressos)
+                AdicionarIngresso(ingresso);
         }
         //Quando a reserva for cancelada, so não persistir
         public void Cancelar()

@@ -1,5 +1,6 @@
 using System;
 using Espetaculos.Shared.Entities;
+using Flunt.Validations;
 
 namespace Espetaculos.Domain.Entities {
 
@@ -13,9 +14,14 @@ namespace Espetaculos.Domain.Entities {
             NomeCliente = nomeCliente;
             Poltrona = poltrona;                        
 
-            if(poltrona.Ocupada)
-                AddNotification(nameof(Poltrona), "Esta poltrona ja esta ocupada");
-            poltrona.Ocupar();
+            AddNotifications(new Contract()
+                .Requires()
+                .IsTrue(Poltrona.Ocupada, nameof(Poltrona), "Esta poltrona ja esta ocupada")
+                .HasMinLen(NomeCliente,3, nameof(NomeCliente), "O nome deve conter no minímo 3 caracteres")
+            );
+
+            if(Valid)
+                poltrona.Ocupar();
         }
 
         public string NomeCliente { get;private set; }           
