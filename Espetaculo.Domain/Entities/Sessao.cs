@@ -33,6 +33,7 @@ namespace Espetaculos.Domain.Entities
         public Espetaculo Espetaculo { get; private set; }
         public Sala Sala { get; private set; }
         private List<Poltrona> _poltronas { get; set; }
+        public decimal ValorIngresso { get; private set; }
         public IReadOnlyList<Poltrona> Poltrona => _poltronas.ToArray();
 
         // Encerrado sera se o horario  e dia atual e maior
@@ -70,7 +71,7 @@ namespace Espetaculos.Domain.Entities
                 return DateTime.Now > Horario;
             }
         }
-        public decimal ValorIngresso { get; private set; }
+        
 
 
     }

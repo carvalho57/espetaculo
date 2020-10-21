@@ -28,7 +28,9 @@ namespace Espetaculos.Domain.Handlers
         // Ai sim é persistido, mas para outras pessoas, a reserva ja foi feita
         public ICommandResult Handle(CreateReservaCommand command)
         {
-            if (command.Validate())
+            command.Validate();
+
+            if (command.Invalid)
                 return new GenericCommandResult(false, "Dados incorretos", command.Notifications);
 
             var cliente = _clienteRepository.GetById(command.ClienteId);
