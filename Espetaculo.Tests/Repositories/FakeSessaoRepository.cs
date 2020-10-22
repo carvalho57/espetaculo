@@ -29,6 +29,11 @@ namespace Espetaculos.Tests.Repositories
             _sessoes.Add(sessao);
         }
 
+        public IEnumerable<Sessao> GetByDate(DateTime time)
+        {
+            return _sessoes.Where(sessao => sessao.Horario == time).ToList();
+        }
+
         public Sessao GetById(Guid id)
         {
             return _sessoes.FirstOrDefault(ses => ses.Id == id) ?? _sessoes[0];
@@ -46,6 +51,14 @@ namespace Espetaculos.Tests.Repositories
         {
             var result = _sessoes.Any(x => x.Sala.Id == salaId && x.Horario == horario);
             return  result;
+            // foreach(var sessao in _sessoes.ToList()) {
+            //     var horarioConfirmed = sessao.Horario == horario;
+            //     var salaConfirmed = sessao.Id == salaId;
+
+            //     if(horarioConfirmed && salaConfirmed) 
+            //         return true;
+            // }
+            // return false;
         }
     }
 }

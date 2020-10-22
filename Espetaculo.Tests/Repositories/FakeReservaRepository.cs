@@ -31,7 +31,7 @@ namespace Espetaculos.Tests.Repositories {
 
         public Reserva GetById(Guid id)
         {
-            return _reservas[0];
+            return _reservas.FirstOrDefault();
         }        
         public void Update(Reserva reserva)
         {

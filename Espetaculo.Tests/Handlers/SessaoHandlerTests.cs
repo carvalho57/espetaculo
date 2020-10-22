@@ -27,7 +27,7 @@ namespace Espetaculos.Tests.Handlers
         }
 
         [TestMethod]
-        public void Dado_um_command_valido_a_sessao_deve_ser_criada()
+        public void Dado_um_CreateSessaoCommand_valido_a_sessao_deve_ser_criada()
         {
             var _espetaculo = _espetaculoRepository.GetById(Guid.NewGuid());
             var _sala = _salaRepository.GetById(Guid.NewGuid());
@@ -37,19 +37,20 @@ namespace Espetaculos.Tests.Handlers
             Assert.IsTrue(commandResult.Sucess);
         }
 
-
-        [TestMethod]
-        public void Dado_um_command_invalido_a_sessao_nao_deve_ser_registrada()
-        {
-            Assert.Fail();
-        }
-
         [TestMethod]
         public void Dado_duas_sessoes_cadastradas_no_mesmo_horario_a_segunda_deve_gerar_um_notificacao()
         {
-            Assert.Fail();
+            var _espetaculo = _espetaculoRepository.GetById(Guid.NewGuid());
+            var _date = new DateTime(2020, 11, 5, 23, 0, 0);
+            var _sala = _salaRepository.GetById(Guid.NewGuid());
+            var command = new CreateSessaoCommand(_espetaculo.Id, _date, _sala.Id, 30);
+            _handler.Handle(command);
+            var commandResult = (GenericCommandResult)_handler.Handle(command);
+
+            Assert.IsFalse(commandResult.Sucess);
+            Assert.AreEqual(_sessaoRepository.GetByDate(_date).Count(), 1);
         }
 
-      
+
     }
 }
