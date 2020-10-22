@@ -42,9 +42,14 @@ namespace Espetaculos.Domain.Entities
 
         public void AdicionarIngresso(IEnumerable<Ingresso> ingressos)
         {
+            AddNotifications(new Contract()
+                    .Requires()
+                    .IfNotNull(ingressos,
+                        entity => entity.IsGreaterThan(ingressos.Count(), 0, "AdicionarIngresso", "Nenhum ingresso para ser adicionado")
+                    ));
             foreach (var ingresso in ingressos)
                 AdicionarIngresso(ingresso);
-        }        
+        }
 
         public void Pagar()
         {
