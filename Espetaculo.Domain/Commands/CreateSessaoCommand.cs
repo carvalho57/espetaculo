@@ -10,6 +10,15 @@ namespace Espetaculos.Domain.Commands
 {
     public class CreateSessaoCommand : Notifiable, ICommand
     {
+        public CreateSessaoCommand() { }
+        public CreateSessaoCommand(Guid espetaculoId, DateTime horario, Guid salaId, decimal valorIngresso)
+        {
+            EspetaculoId = espetaculoId;
+            Horario = horario;
+            SalaId = salaId;
+            ValorIngresso = valorIngresso;
+        }
+
         public Guid EspetaculoId { get; set; }
         public DateTime Horario { get; private set; }
         public Guid SalaId { get; set; }

@@ -1,6 +1,5 @@
 namespace Espetaculos.Domain.Enums {
-    public enum EStatusReserva {
-        Cancelada,
+    public enum EStatusReserva {        
         Criada,
         AguardandoPagamento,
         PagamentoConcluido

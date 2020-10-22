@@ -29,14 +29,6 @@ namespace Espetaculos.Tests.Entities
         }
 
         [TestMethod]
-        public void Quando_a_reserva_for_cancelada_o_status_deve_ser_cancelado()
-        {
-            var reserva = new Reserva(_cliente, _sessao);
-            reserva.Cancelar();
-            Assert.AreEqual(reserva.Status, EStatusReserva.Cancelada);
-        }
-
-        [TestMethod]
         public void Quando_a_reserva_for_criada_o_status_deve_ser_Criada()
         {
             var reserva = new Reserva(_cliente, _sessao);

@@ -10,7 +10,11 @@ using Flunt.Notifications;
 
 namespace Espetaculos.Domain.Handlers
 {
-    public class ReservaHandler : Notifiable, IHandler<CreateReservaCommand>
+    public class ReservaHandler :
+        Notifiable,
+        IHandler<CreateReservaCommand>,
+        IHandler<ConfirmeReservaCommand>,
+        IHandler<CancelReservaCommand>
     {
         private readonly IClienteRepository _clienteRepository;
         private readonly ISessaoRepository _sessaoRepository;
@@ -35,14 +39,15 @@ namespace Espetaculos.Domain.Handlers
 
             var cliente = _clienteRepository.GetById(command.ClienteId);
             var sessao = _sessaoRepository.GetById(command.SessaoId);
-            var poltronas = _sessaoRepository.GetPoltronasByIds(ExtractGuids.Extract(command));
+            var poltronas = _sessaoRepository.GetPoltronasByIds(sessao.Id, ExtractGuids.Extract(command));
 
             //Verificar se poltronas estão ocupadas
             if (IsPoltronasOcuped(poltronas))
                 return new GenericCommandResult(false, "Algumas poltronas selecionadas já estão ocupadas", poltronas);
 
             var reserva = new Reserva(cliente, sessao);
-            reserva.AdicionarIngresso(CreateIngressos(command.Ingressos, poltronas));
+            var ingressos = CreateIngressos(command.Ingressos, poltronas);
+            reserva.AdicionarIngresso(ingressos);
 
             AddNotifications(reserva);
 
@@ -51,21 +56,46 @@ namespace Espetaculos.Domain.Handlers
 
             _reservaRepository.Add(reserva);
 
-            return new GenericCommandResult(true, "Reserva feita com sucesso", reserva);
+            return new GenericCommandResult(true, "Reserva cadastrado, aguardando pagamento", reserva);
             //Verifica o estado das poltronas 
             //Utilizar Dapper ou buscar estas informações na tela
         }
+        public ICommandResult Handle(ConfirmeReservaCommand command)
+        {
+            command.Validate();
+            if (command.Invalid)
+                return new GenericCommandResult(false, "Dados incorretos", command.Notifications);
 
-        
+            var reserva = _reservaRepository.GetById(command.ReservaId);
+            reserva.Pagar();
+            _reservaRepository.Update(reserva);
+            return new GenericCommandResult(true, "Pagamento realizado, Reserva confirmada");
+        }
+        public ICommandResult Handle(CancelReservaCommand command)
+        {
+            command.Validate();
+            if (command.Invalid)
+                return new GenericCommandResult(false, "Dados incorretos", command.Notifications);
+
+            var reserva = _reservaRepository.GetById(command.ReservaId);
+            _reservaRepository.Delete(reserva);
+            return new GenericCommandResult(true, "Reserva cancelada com sucesso");
+        }
+
         public IEnumerable<Ingresso> CreateIngressos(IEnumerable<CreateIngressoCommand> ingressoCommands, IEnumerable<Poltrona> poltronas)
         {
-            return ingressoCommands.Join(
-                        poltronas,
-                        ingresso => ingresso.PoltronaId,
-                        poltrona => poltrona.Id,
-                        (ingresso, poltrona) => new Ingresso(ingresso.NomeCliente, poltrona)
-                    );
+            var ingressos = ingressoCommands.Join(
+                       poltronas,
+                       ingresso => ingresso.PoltronaId,
+                       poltrona => poltrona.Id,
+                       (ingresso, poltrona) => new Ingresso(ingresso.NomeCliente, poltrona)
+                   );
+
+            return ingressos.ToList();                
         }
+
         public bool IsPoltronasOcuped(IEnumerable<Poltrona> poltronas) => poltronas.Any(poltrona => poltrona.Ocupada);
+
+
     }
 }

@@ -6,7 +6,7 @@ namespace Espetaculos.Domain.Repositories {
     public interface ISessaoRepository {
         Sessao GetById(Guid id);        
         void Add(Sessao sessao);
-        IEnumerable<Poltrona> GetPoltronasByIds(IEnumerable<Guid> ids);
+        IEnumerable<Poltrona> GetPoltronasByIds(Guid sessao, IEnumerable<Guid> poltronas);
         bool IsHorarioFree(DateTime horario, Guid salaId);
     }
 }

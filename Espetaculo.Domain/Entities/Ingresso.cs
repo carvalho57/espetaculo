@@ -16,7 +16,7 @@ namespace Espetaculos.Domain.Entities {
 
             AddNotifications(new Contract()
                 .Requires()
-                .IsTrue(Poltrona.Ocupada, nameof(Poltrona), "Esta poltrona ja esta ocupada")
+                .IsFalse(Poltrona.Ocupada, nameof(Poltrona), "Esta poltrona ja esta ocupada")
                 .HasMinLen(NomeCliente,3, nameof(NomeCliente), "O nome deve conter no minímo 3 caracteres")
             );
 

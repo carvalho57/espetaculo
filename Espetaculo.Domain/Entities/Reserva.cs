@@ -44,12 +44,7 @@ namespace Espetaculos.Domain.Entities
         {
             foreach (var ingresso in ingressos)
                 AdicionarIngresso(ingresso);
-        }
-        //Quando a reserva for cancelada, so não persistir
-        public void Cancelar()
-        {
-            Status = EStatusReserva.Cancelada;
-        }
+        }        
 
         public void Pagar()
         {
