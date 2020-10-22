@@ -28,6 +28,7 @@ namespace Espetaculos.Domain.Commands
                 .Requires()
                 .AreNotEquals(ClienteId, Guid.Empty, nameof(Cliente), "Identificador invalido para um cliente")
                 .AreNotEquals(SessaoId, Guid.Empty, nameof(Sessao), "Identificador invalido para uma sessão")
+                .IfNotNull(Ingressos, entity => entity.IsGreaterThan(Ingressos.Count(),0, nameof(Ingressos), "A reserva deve conter pelo menos um ingresso para ser concluida"))
                 .Join(Ingressos.ToArray())
             );
             return Valid;
