@@ -12,7 +12,8 @@ namespace Espetaculos.Domain.Entities
         private readonly char PrimeiraLetraDaColuna = 'A';
         public Sessao(DateTime horario, Espetaculo espetaculo, Sala sala, decimal valorIngresso)
         {
-            Horario = horario;
+            HorarioInicio = horario;
+            HorarioFim = horario.AddMinutes(espetaculo.DuracaoMinutos);
             Espetaculo = espetaculo;
             Sala = sala;
             ValorIngresso = valorIngresso;
@@ -20,7 +21,7 @@ namespace Espetaculos.Domain.Entities
 
             AddNotifications(new Contract()
                     .Requires()
-                    .IsGreaterThan(Horario, DateTime.Now, nameof(Horario), "Horario não pode ser menor do que a data de hoje")
+                    .IsGreaterThan(HorarioInicio, DateTime.Now, nameof(HorarioInicio), "Horario não pode ser menor do que a data de hoje")
                     .IsGreaterThan(ValorIngresso, 0, nameof(ValorIngresso), "O valor do ingresso não pode ser menor ou igual a zero")                    
             );
 
@@ -29,7 +30,8 @@ namespace Espetaculos.Domain.Entities
         }
         // Para mudar necessita saber se não ha outro no mesmo horário
         // mesmas validaçẽos para sala
-        public DateTime Horario { get; private set; }
+        public DateTime HorarioInicio { get; private set; }
+        public DateTime HorarioFim { get; private set; }
         public Espetaculo Espetaculo { get; private set; }
         public Sala Sala { get; private set; }
         private List<Poltrona> _poltronas { get; set; }
@@ -68,7 +70,7 @@ namespace Espetaculos.Domain.Entities
         {
             get
             {
-                return DateTime.Now > Horario;
+                return DateTime.Now > HorarioFim;
             }
         }
         

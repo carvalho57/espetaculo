@@ -30,16 +30,23 @@ namespace Espetaculos.Domain.Handlers
             if (command.Invalid)
                 return new GenericCommandResult(false, "Dados inválidos", command.Notifications);
 
-            if (_sessaoRepository.IsHorarioFree(command.Horario, command.SalaId))
-                return new GenericCommandResult(false, "O horario na sala especificada esta ocupado");
-
             var espetaculo = _espetaculoRepository.GetById(command.EspetaculoId);
+            //Verificar se o horario esta livre, isso inclui somar a duração do espetaculi
+            if (_sessaoRepository
+                    .IsHorarioNotFree(
+                        command.Horario,
+                        command.Horario.AddMinutes(espetaculo.DuracaoMinutos), command.SalaId)
+                )
+            {
+                return new GenericCommandResult(false, "O horario na sala especificada esta ocupado");
+            }
+
             var sala = _salaRepository.GetById(command.SalaId);
             var sessao = new Sessao(command.Horario, espetaculo, sala, command.ValorIngresso);
 
             AddNotifications(sessao);
 
-            if(Invalid) 
+            if (Invalid)
                 return new GenericCommandResult(false, "Não foi possivel criar a sessão", this.Notifications);
 
             _sessaoRepository.Add(sessao);

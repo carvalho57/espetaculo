@@ -8,6 +8,6 @@ namespace Espetaculos.Domain.Repositories {
         IEnumerable<Sessao> GetByDate(DateTime time);
         void Add(Sessao sessao);
         IEnumerable<Poltrona> GetPoltronasByIds(Guid sessao, IEnumerable<Guid> poltronas);
-        bool IsHorarioFree(DateTime horario, Guid salaId);
+        bool IsHorarioNotFree(DateTime horarioInicio, DateTime horarioFim, Guid salaId);
     }
 }
