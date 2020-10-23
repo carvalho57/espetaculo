@@ -31,7 +31,7 @@ namespace Espetaculos.Tests.Repositories
 
         public IEnumerable<Sessao> GetByDate(DateTime time)
         {
-            return _sessoes.Where(sessao => sessao.Horario == time).ToList();
+            return _sessoes.Where(sessao => sessao.HorarioInicio == time).ToList();
         }
 
         public Sessao GetById(Guid id)
@@ -46,19 +46,15 @@ namespace Espetaculos.Tests.Repositories
                             .Poltrona.ToList();
            return poltronas.Join(poltronasSessao, x => x, poltrona => poltrona.Id, (x,poltrona) => poltrona).ToList();
         }
-
-        public bool IsHorarioFree(DateTime horario, Guid salaId)
+        /*Verificar todas as salas, cujo horario */        
+        
+        public bool IsHorarioNotFree(DateTime horarioInicio, DateTime horarioFim, Guid salaId)
         {
-            var result = _sessoes.Any(x => x.Sala.Id == salaId && x.Horario == horario);
-            return  result;
-            // foreach(var sessao in _sessoes.ToList()) {
-            //     var horarioConfirmed = sessao.Horario == horario;
-            //     var salaConfirmed = sessao.Id == salaId;
-
-            //     if(horarioConfirmed && salaConfirmed) 
-            //         return true;
-            // }
-            // return false;
+        
+            var sessaoLivre = _sessoes            
+                .Where(sessao => salaId == sessao.Sala.Id)
+                .Any(sessao => (horarioInicio >  sessao.HorarioInicio &&  horarioInicio < sessao.HorarioFim) || (horarioFim <= sessao.HorarioFim));            
+            return sessaoLivre;      
         }
     }
 }

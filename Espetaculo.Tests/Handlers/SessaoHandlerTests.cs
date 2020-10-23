@@ -51,6 +51,20 @@ namespace Espetaculos.Tests.Handlers
             Assert.AreEqual(_sessaoRepository.GetByDate(_date).Count(), 1);
         }
 
-
+        /*Dado uma sessão cadastra dentro do horario de outro espetaculo a mesma não deve ser criada*/
+        [TestMethod]
+        public void Dado_uma_sessão_cadastra_dentro_do_horario_de_outro_espetaculo_a_mesma_nao_deve_ser_criada()
+        {
+            //Arrange
+            var sessao = _sessaoRepository.GetById(Guid.NewGuid());
+            var horararioTermino = sessao.HorarioInicio.AddMinutes(sessao.Espetaculo.DuracaoMinutos);
+            var sala = sessao.Sala;
+            var espetaculo = _espetaculoRepository.GetById(Guid.NewGuid());
+            //Act
+            var command = new CreateSessaoCommand(espetaculo.Id,horararioTermino.AddMinutes(-30),sala.Id, 30);
+            var commandResult = (GenericCommandResult)_handler.Handle(command);
+            //Assert
+            Assert.IsFalse(commandResult.Sucess);
+        }
     }
 }

@@ -76,16 +76,17 @@ namespace Espetaculos.Tests.Handlers
             Assert.AreEqual(_reservaRepository.GetByCliente(cliente.Id).Count(), 0);
         }
 
-
         [TestMethod]
         public void Dado_um_CreateReservaCommand_sem_ingressos_a_reserva_nao_deve_ser_criada()
         {
             var sessao = _sessaoRepository.GetById(Guid.NewGuid());
             var poltronas = sessao.Poltrona.ToList();
             var ingressos = new List<CreateIngressoCommand>();
-            var command = new CreateReservaCommand(Guid.NewGuid(), sessao.Id, ingressos);
+            var cliente = _clientRepository.GetById(Guid.NewGuid());
+            var command = new CreateReservaCommand(cliente.Id, sessao.Id, ingressos);
             var commandResult = (GenericCommandResult)_handler.Handle(command);
             Assert.IsFalse(commandResult.Sucess);
+            Assert.AreEqual(_reservaRepository.GetByCliente(cliente.Id).Count(), 0);
         }
 
         [TestMethod]
@@ -96,7 +97,25 @@ namespace Espetaculos.Tests.Handlers
             var ingressos = new List<CreateIngressoCommand>(){
                 new CreateIngressoCommand("Jose", Guid.NewGuid())
             };
-            var command = new CreateReservaCommand(Guid.NewGuid(), sessao.Id, ingressos);
+            var cliente = _clientRepository.GetById(Guid.NewGuid());
+            var command = new CreateReservaCommand(cliente.Id, sessao.Id, ingressos);
+            var commandResult = (GenericCommandResult)_handler.Handle(command);
+            Assert.IsFalse(commandResult.Sucess);
+            Assert.AreEqual(_reservaRepository.GetByCliente(cliente.Id).Count(), 0);
+        }
+
+        [TestMethod]
+        public void Dado_um_CreateReservaCommand_com_cliente_que_nao_existe_a_reserva_nao_deve_ser_criada()
+        {
+            var sessao = _sessaoRepository.GetById(Guid.NewGuid());
+            var poltronas = sessao.Poltrona.ToList();
+
+            var ingressos = new List<CreateIngressoCommand>()
+            {
+                new CreateIngressoCommand("Jose", poltronas[0].Id)
+            };
+
+            var command = new CreateReservaCommand(Guid.Empty, sessao.Id, ingressos);
             var commandResult = (GenericCommandResult)_handler.Handle(command);
             Assert.IsFalse(commandResult.Sucess);
         }
