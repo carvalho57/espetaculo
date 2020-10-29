@@ -18,11 +18,29 @@ namespace Espetaculos.Tests.Repositories {
                                 ETipoUsuario.Cliente
                         ));
         }
+
+        public Cliente GetByEmail(string email)
+        {
+            if(!string.IsNullOrEmpty(email))
+                return _cliente;
+            return null;
+        }
+
         public Cliente GetById(Guid id)
         {
             if(id == Guid.Empty)
                 return null;
             return _cliente;
+        }
+
+        public void Save(Cliente cliente)
+        {
+         
+        }
+
+        public bool UserExist(string email)
+        {
+            return string.IsNullOrEmpty(email) ? false : true;
         }
     }
 }

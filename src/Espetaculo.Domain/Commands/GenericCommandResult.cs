@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using Espetaculos.Domain.Entities;
 using Espetaculos.Shared.Commands;
 using Flunt.Notifications;
-using Flunt.Validations;
 
 namespace Espetaculos.Domain.Commands
 {

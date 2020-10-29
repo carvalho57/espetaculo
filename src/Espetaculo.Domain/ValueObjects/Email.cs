@@ -19,10 +19,10 @@ namespace Espetaculos.Domain.ValueObjects
 
         public string Endereco { get; private set; }
 
-        private bool ValidarEmail()
-        {
-            var regex = new Regex(@"[\w\.\-]+@\w{1,}.\w{1,}.?[\w]{2}");
-            return regex.IsMatch(Endereco);
-        }
+        // private bool ValidarEmail()
+        // {
+        //     var regex = new Regex(@"[\w\.\-]+@\w{1,}.\w{1,}.?[\w]{2}");
+        //     return regex.IsMatch(Endereco);
+        // }
     }
 }
